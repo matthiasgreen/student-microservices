@@ -1,6 +1,8 @@
 package fr.mgreen.student_help.auth_microservice.db;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 
 import java.time.LocalDateTime;
 
@@ -18,6 +20,8 @@ public class User {
     @GeneratedValue
     private Long id;
 
+    @NotNull
+    @NotBlank
     @Column(unique = true)
     private String username;
 
