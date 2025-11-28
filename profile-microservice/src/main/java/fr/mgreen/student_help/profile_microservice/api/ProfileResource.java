@@ -1,50 +1,42 @@
 package fr.mgreen.student_help.profile_microservice.api;
 
-import fr.mgreen.student_help.profile_microservice.db.SessionManager;
 import fr.mgreen.student_help.profile_microservice.db.User;
-import fr.mgreen.student_help.profile_microservice.db.User_;
-import jakarta.persistence.criteria.CriteriaQuery;
-import jakarta.persistence.criteria.Root;
-import org.hibernate.query.criteria.HibernateCriteriaBuilder;
+import fr.mgreen.student_help.profile_microservice.db.UserRepository;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
+import jakarta.validation.Valid;
+import jakarta.ws.rs.core.SecurityContext;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
 
 @RestController()
 public class ProfileResource {
     @Autowired
-    private SessionManager sessionManager;
+    private UserRepository userRepository;
 
+    @Deprecated
     @PostMapping("/users")
-    public UserGet createUser(@RequestBody UserPost userPost) {
+    public UserGet createUser(@Valid @RequestBody UserPost userPost) {
         User user = userPost.toEntity();
-        sessionManager.getSessionFactory().inTransaction(session -> session.persist(user));
+        userRepository.saveUser(user);
         return UserGet.fromEntity(user);
     }
 
     @GetMapping("/users")
     public List<UserGet> getUsers() {
-        var sessionFactory = sessionManager.getSessionFactory();
-        return sessionFactory.fromSession(session -> {
-            HibernateCriteriaBuilder builder = sessionFactory.getCriteriaBuilder();
-            CriteriaQuery<User> query = builder.createQuery(User.class);
-            Root<User> user = query.from(User.class);
-            query.select(user);
-            return session.createSelectionQuery(query).getResultList();
-        }).stream().map(UserGet::fromEntity).toList();
+        return userRepository.getAllUsers().stream().map(UserGet::fromEntity).toList();
     }
 
     @GetMapping("/users/{id}")
     public UserGet getUser(@PathVariable("id") Long userId) {
-        var sessionFactory = sessionManager.getSessionFactory();
-        return UserGet.fromEntity(sessionFactory.fromSession(session -> {
-            HibernateCriteriaBuilder builder = sessionFactory.getCriteriaBuilder();
-            CriteriaQuery<User> query = builder.createQuery(User.class);
-            Root<User> user = query.from(User.class);
-            query.select(user).where(builder.equal(user.get(User_.id), userId));
-            return session.createSelectionQuery(query).getSingleResult();
-        }));
+        return UserGet.fromEntity(userRepository.findById(userId));
+    }
+
+    @PutMapping("/users/{id}")
+    public UserGet updateUser(@RequestHeader(value = "Authorization", required = false) String bearerKey, @PathVariable("id") Long userId, @Valid @RequestBody UserPut userPut) {
+        User user = userRepository.updateUser(userId, userPut);
+        return UserGet.fromEntity(user);
     }
 }

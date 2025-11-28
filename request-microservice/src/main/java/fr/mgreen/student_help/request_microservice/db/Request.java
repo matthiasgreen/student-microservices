@@ -1,9 +1,6 @@
 package fr.mgreen.student_help.request_microservice.db;
 
 import jakarta.persistence.*;
-import jakarta.validation.constraints.Email;
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotNull;
 import org.hibernate.annotations.Fetch;
 import org.hibernate.annotations.FetchMode;
 
@@ -17,36 +14,27 @@ public class Request {
     @GeneratedValue
     private Long id;
 
-    @NotNull
     @Column(nullable = false, name = "poster_id")
     private Long posterId;
 
-    @NotNull
-    @NotBlank
     @Column(nullable = false)
     private String title;
 
-    @NotNull
-    @NotBlank
     @Column(nullable = false)
     private String description;
-
-    @Email
-    @Column(nullable = false)
-    private String email;
 
     @Column(name = "date_wanted")
     private LocalDateTime dateWanted;
 
     @Enumerated(EnumType.STRING)
-    @Basic(optional = false)
+    @Column(nullable = false)
     private RequestStatus status;
 
     @ElementCollection
     @Fetch(FetchMode.JOIN)
     private List<String> keywords;
 
-    @Column(name = "created_at")
+    @Column(name = "created_at", nullable = false)
     private LocalDateTime createdAt;
 
     public Request() {
@@ -55,17 +43,15 @@ public class Request {
     public Request(Long posterId,
                    String title,
                    String description,
-                   String email,
                    LocalDateTime dateWanted,
-                   RequestStatus status,
                    List<String> keywords) {
         this.posterId = posterId;
         this.title = title;
         this.description = description;
-        this.email = email;
         this.dateWanted = dateWanted;
-        this.status = status;
+        this.status = RequestStatus.WAITING;
         this.keywords = keywords;
+        this.createdAt = LocalDateTime.now();
     }
 
     public Long getId() {
@@ -82,10 +68,6 @@ public class Request {
 
     public String getDescription() {
         return description;
-    }
-
-    public String getEmail() {
-        return email;
     }
 
     public LocalDateTime getDateWanted() {

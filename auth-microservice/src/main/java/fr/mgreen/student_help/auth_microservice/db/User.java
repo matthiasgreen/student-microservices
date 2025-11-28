@@ -14,20 +14,20 @@ public class User {
     public User(String username, String hashedPassword) {
         this.username = username;
         this.hashedPassword = hashedPassword;
+        this.createdAt = LocalDateTime.now();
     }
 
     @Id
     @GeneratedValue
     private Long id;
 
-    @NotNull
-    @NotBlank
-    @Column(unique = true)
+    @Column(unique = true, nullable = false)
     private String username;
 
+    @Column(nullable = false)
     private String hashedPassword;
 
-    @Column(name = "created_at")
+    @Column(name = "created_at", nullable = false)
     private LocalDateTime createdAt;
 
     public Long getId() {

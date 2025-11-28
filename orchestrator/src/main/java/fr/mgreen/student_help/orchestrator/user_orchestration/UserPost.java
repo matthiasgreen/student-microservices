@@ -1,6 +1,5 @@
-package fr.mgreen.student_help.profile_microservice.api;
+package fr.mgreen.student_help.orchestrator.user_orchestration;
 
-import fr.mgreen.student_help.profile_microservice.db.User;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
@@ -10,8 +9,8 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 public record UserPost(
-        @NotNull Long id,
         @NotNull @Length(min = 3, max = 20) String username,
+        @NotNull @Length(min = 10, max = 100) String password,
         @NotNull @NotBlank String firstName,
         @NotNull @NotBlank String lastName,
         @NotNull @Email String email,
@@ -19,18 +18,4 @@ public record UserPost(
         @NotBlank String course,
         List<String> skills,
         List<LocalDateTime> availabilities
-) {
-    public User toEntity() {
-        return new User(
-                id(),
-                username(),
-                firstName(),
-                lastName(),
-                email(),
-                institution(),
-                course(),
-                skills(),
-                availabilities()
-        );
-    }
-}
+) { }

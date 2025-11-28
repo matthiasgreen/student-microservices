@@ -17,29 +17,20 @@ public class User {
     @Id
     private Long id;
 
-    @NotNull
-    @NotBlank
-    @Column(unique = true)
+    @Column(unique = true, nullable = false)
     private String username;
 
-    @NotNull
-    @NotBlank
-    @Column(name = "first_name")
+    @Column(name = "first_name", nullable = false)
     private String firstName;
 
-    @NotNull
-    @NotBlank
-    @Column(name = "last_name")
+    @Column(name = "last_name", nullable = false)
     private String lastName;
 
-    @Email
-    @Column(name = "email")
+    @Column(name = "email", nullable = false)
     private String email;
 
-    @NotBlank
     private String institution;
 
-    @NotBlank
     private String course;
 
     @ElementCollection
@@ -50,7 +41,7 @@ public class User {
     @Fetch(FetchMode.JOIN)
     private List<LocalDateTime> availabilities;
 
-    @Column(name = "created_at")
+    @Column(name = "created_at", nullable = false)
     private LocalDateTime createdAt;
 
     public User() {
@@ -117,5 +108,33 @@ public class User {
 
     public LocalDateTime getCreatedAt() {
         return createdAt;
+    }
+
+    public void setFirstName(String firstName) {
+        this.firstName = firstName;
+    }
+
+    public void setLastName(String lastName) {
+        this.lastName = lastName;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
+    }
+
+    public void setInstitution(String institution) {
+        this.institution = institution;
+    }
+
+    public void setCourse(String course) {
+        this.course = course;
+    }
+
+    public void setSkills(List<String> skills) {
+        this.skills = skills;
+    }
+
+    public void setAvailabilities(List<LocalDateTime> availabilities) {
+        this.availabilities = availabilities;
     }
 }
