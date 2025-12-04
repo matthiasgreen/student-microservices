@@ -5,6 +5,7 @@ import fr.mgreen.student_help.orchestrator.auth_client.AuthPost;
 import fr.mgreen.student_help.orchestrator.profile_client.ProfileClient;
 import fr.mgreen.student_help.orchestrator.profile_client.ProfileGet;
 import fr.mgreen.student_help.orchestrator.profile_client.ProfilePost;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -19,7 +20,7 @@ public class UserOrchestrationResource {
     private ProfileClient profileClient;
 
     @PostMapping("/users")
-    public ProfileGet signUp(@RequestBody UserPost userPost) {
+    public ProfileGet signUp(@Valid @RequestBody UserPost userPost) {
         // Post signup to auth
         var authPost = new AuthPost(userPost.username(), userPost.password());
         var authGet = authClient.signUp(authPost);
